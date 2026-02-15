@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicBlock Valentine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #e94560;
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .heart-container:hover {
+            transform: scale(1.1);
+        }
+
+        .heart {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 50%, #e94560 100%);
+            transform: rotate(-45deg);
+            animation: heartbeat 1.5s ease-in-out infinite;
+            box-shadow: 0 0 60px rgba(233, 69, 96, 0.6);
+            border-radius: 10px;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 50%;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        .heart-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            z-index: 100;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magicblock-logo {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); }
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(233, 69, 96, 0.8); }
+            to { text-shadow: 0 0 30px rgba(233, 69, 96, 1), 0 0 40px rgba(233, 69, 96, 0.8); }
+        }
+
+        .subtitle {
+            color: #e94560;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            width: 150px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(233, 69, 96, 0.1);
+            border-color: #e94560;
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            color: #fff;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.7em;
+        }
+
+        .message {
+            color: #fff;
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(233, 69, 96, 0.6);
+        }
+
+        .rollup-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .rollup-block {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid rgba(233, 69, 96, 0.5);
+            border-radius: 8px;
+            animation: rollup 3s infinite ease-in-out;
+        }
+
+        @keyframes rollup {
+            0%, 100% { transform: translateX(-100px) rotate(0deg); opacity: 0; }
+            50% { transform: translateX(calc(100vw + 100px)) rotate(360deg); opacity: 1; }
+        }
+
+        .hidden-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid #e94560;
+            border-radius: 20px;
+            padding: 40px;
+            z-index: 1000;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 0 50px rgba(233, 69, 96, 0.5);
+        }
+
+        .hidden-message.show {
+            display: block;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            80% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #e94560;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .speed-lines {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e94560, transparent);
+            opacity: 0;
+        }
+
+        @keyframes speedLine {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Additional floating logos in background */
+        .floating-logo {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.1;
+            animation: floatLogo 15s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes floatLogo {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div id="particles"></div>
+
+    <!-- Floating background logos -->
+    <div id="floatingLogos"></div>
+
+    <!-- Rollup animation blocks -->
+    <div class="rollup-animation" id="rollupContainer"></div>
+
+    <div class="container">
+        <div class="heart-container" onclick="showLove()">
+            <div class="heart">
+                <div class="heart-content">
+                    <!-- MagicBlock Logo SVG -->
+                    <svg class="magicblock-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Wizard hat base -->
+                        <path d="M20 70 Q20 85 35 85 L65 85 Q80 85 80 70 L75 40 L25 40 Z" fill="white"/>
+                        <!-- Hat brim -->
+                        <ellipse cx="50" cy="40" rx="35" ry="8" fill="white"/>
+                        <!-- Hat cone -->
+                        <path d="M25 40 L50 5 L75 40" fill="white"/>
+                        <!-- Star/sparkle -->
+                        <path d="M50 15 L53 22 L60 22 L55 27 L57 34 L50 30 L43 34 L45 27 L40 22 L47 22 Z" fill="#1a1a2e"/>
+                        <!-- Eyes -->
+                        <ellipse cx="40" cy="65" rx="4" ry="6" fill="#1a1a2e"/>
+                        <ellipse cx="60" cy="65" rx="4" ry="6" fill="#1a1a2e"/>
+                    </svg>
+                    <div class="logo-text">MagicBlock</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="title">Be My Valentine?</h1>
+        <p class="subtitle">Composable Love on Solana</p>
+
+        <div class="features">
+            <div class="feature-card" onclick="animateFeature(this, 'speed')">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Lightning Fast</div>
+                <div class="feature-desc">Faster than my heart racing when I see you</div>
+            </div>
+            <div class="feature-card" onclick="animateFeature(this, 'realtime')">
+                <div class="feature-icon">🔴</div>
+                <div class="feature-title">Real-Time</div>
+                <div class="feature-desc">Our connection has zero latency</div>
+            </div>
+            <div class="feature-card" onclick="animateFeature(this, 'composable')">
+                <div class="feature-icon">🧩</div>
+                <div class="feature-title">Composable</div>
+                <div class="feature-desc">We fit together perfectly</div>
+            </div>
+            <div class="feature-card" onclick="animateFeature(this, 'ephemeral')">
+                <div class="feature-icon">✨</div>
+                <div class="feature-title">Ephemeral</div>
+                <div class="feature-desc">Moments that last forever</div>
+            </div>
+        </div>
+
+        <p class="message">
+            "Just like MagicBlock's ephemeral rollups make transactions instant, 
+            you make my heart skip a beat in real-time. Our love is composable, 
+            scalable, and built to last on the blockchain of eternity. 
+            Will you be my validator?"
+        </p>
+
+        <button class="cta-button" onclick="propose()">Sign Transaction 💍</button>
+    </div>
+
+    <!-- Hidden proposal message -->
+    <div class="hidden-message" id="proposalMsg">
+        <button class="close-btn" onclick="closeProposal()">×</button>
+        <div style="font-size: 3em; margin-bottom: 20px;">💎</div>
+        <h2 style="color: #e94560; margin-bottom: 15px;">Transaction Confirmed!</h2>
+        <p style="color: #fff; line-height: 1.6;">
+            You've successfully staked your heart!<br><br>
+            <span style="color: #e94560; font-weight: bold;">Status:</span> Validated ❤️<br>
+            <span style="color: #e94560; font-weight: bold;">Finality:</span> Instant<br>
+            <span style="color: #e94560; font-weight: bold;">Duration:</span> Eternal<br><br>
+            <em>"Together we'll build the future of on-chain gaming, one block at a time."</em>
+        </p>
+    </div>
+
+    <script>
+        // SVG logo string for reuse
+        const logoSVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+            <path d="M20 70 Q20 85 35 85 L65 85 Q80 85 80 70 L75 40 L25 40 Z" fill="white"/>
+            <ellipse cx="50" cy="40" rx="35" ry="8" fill="white"/>
+            <path d="M25 40 L50 5 L75 40" fill="white"/>
+            <path d="M50 15 L53 22 L60 22 L55 27 L57 34 L50 30 L43 34 L45 27 L40 22 L47 22 Z" fill="#1a1a2e"/>
+            <ellipse cx="40" cy="65" rx="4" ry="6" fill="#1a1a2e"/>
+            <ellipse cx="60" cy="65" rx="4" ry="6" fill="#1a1a2e"/>
+        </svg>`;
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Create floating background logos
+        function createFloatingLogos() {
+            const container = document.getElementById('floatingLogos');
+            for (let i = 0; i < 8; i++) {
+                const logo = document.createElement('div');
+                logo.className = 'floating-logo';
+                logo.innerHTML = logoSVG;
+                logo.style.left = Math.random() * 100 + '%';
+                logo.style.animationDelay = (i * 2) + 's';
+                logo.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(logo);
+            }
+        }
+
+        // Create rollup animation blocks
+        function createRollupBlocks() {
+            const container = document.getElementById('rollupContainer');
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const block = document.createElement('div');
+                    block.className = 'rollup-block';
+                    block.style.top = (Math.random() * 80 + 10) + '%';
+                    block.style.animationDelay = (i * 0.5) + 's';
+                    container.appendChild(block);
+                }, i * 1000);
+            }
+        }
+
+        // Feature card animation
+        function animateFeature(card, type) {
+            // Add speed lines for speed feature
+            if (type === 'speed') {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const line = document.createElement('div');
+                        line.className = 'speed-lines';
+                        line.style.top = card.offsetTop + (Math.random() * 100) + 'px';
+                        line.style.animation = `speedLine 0.5s ease-out`;
+                        document.body.appendChild(line);
+                        setTimeout(() => line.remove(), 500);
+                    }, i * 100);
+                }
+            }
+            
+            // Pulse animation
+            card.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Show love message
+        function showLove() {
+            const heart = document.querySelector('.heart');
+            heart.style.animation = 'none';
+            setTimeout(() => {
+                heart.style.animation = 'heartbeat 0.5s ease-in-out infinite';
+            }, 10);
+            
+            setTimeout(() => {
+                heart.style.animation = 'heartbeat 1.5s ease-in-out infinite';
+            }, 2000);
+        }
+
+        // Proposal function
+        function propose() {
+            const btn = document.querySelector('.cta-button');
+            btn.textContent = 'Confirming...';
+            btn.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+            
+            setTimeout(() => {
+                document.getElementById('proposalMsg').classList.add('show');
+                btn.textContent = 'Confirmed! ✓';
+                
+                // Create celebration particles with logos
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const burst = document.createElement('div');
+                        burst.style.position = 'fixed';
+                        burst.style.left = '50%';
+                        burst.style.top = '50%';
+                        burst.style.width = '20px';
+                        burst.style.height = '20px';
+                        burst.innerHTML = logoSVG;
+                        burst.style.pointerEvents = 'none';
+                        burst.style.zIndex = '999';
+                        
+                        const angle = (Math.PI * 2 * i) / 20;
+                        const velocity = 200;
+                        const tx = Math.cos(angle) * velocity;
+                        const ty = Math.sin(angle) * velocity;
+                        
+                        burst.style.transition = 'all 1s ease-out';
+                        document.body.appendChild(burst);
+                        
+                        setTimeout(() => {
+                            burst.style.transform = `translate(${tx}px, ${ty}px) scale(0)`;
+                            burst.style.opacity = '0';
+                        }, 10);
+                        
+                        setTimeout(() => burst.remove(), 1000);
+                    }, i * 50);
+                }
+            }, 1500);
+        }
+
+        function closeProposal() {
+            document.getElementById('proposalMsg').classList.remove('show');
+            const btn = document.querySelector('.cta-button');
+            btn.textContent = 'Sign Transaction 💍';
+            btn.style.background = 'linear-gradient(135deg, #e94560 0%, #ff6b6b 100%)';
+        }
+
+        // Initialize
+        createParticles();
+        createFloatingLogos();
+        createRollupBlocks();
+
+        // Add interactive mouse trail with mini logos
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.95) {
+                const trail = document.createElement('div');
+                trail.style.position = 'fixed';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                trail.style.width = '12px';
+                trail.style.height = '12px';
+                trail.innerHTML = logoSVG;
+                trail.style.pointerEvents = 'none';
+                trail.style.zIndex = '999';
+                trail.style.transition = 'opacity 1s, transform 1s';
+                trail.style.opacity = '0.6';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(0) rotate(180deg)';
+                }, 10);
+                setTimeout(() => trail.remove(), 1000);
+            }
+        });
+    </script>
+</body>
+</html>
